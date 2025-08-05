@@ -21,10 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.network.HttpException
 import com.example.a08_modulo_a2_05.AuthRequest
 import com.example.a08_modulo_a2_05.network.API
 import com.google.android.gms.common.api.Api
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 
 @Composable
 fun LoginScreen(nav: NavHostController) {
@@ -77,12 +79,17 @@ fun LoginScreen(nav: NavHostController) {
                     val prefs = ctx.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
                     prefs.edit().apply{
                         putString("jwt_token", token)
+                        putString("email", email.value)
                         apply()
                     }
                     nav.navigate("home")
                 } catch (e: Exception) {
+                    val generalError = when(e) {
+                        is UnknownHostException -> Toast("Sem Conexão com a internet")
+                        is HttpException -> { Toast("Email ou Senha Incorretos") }
+                        else -> Toast("Erro inesperado")
+                    }
 
-                    null
                 }
             }
         }) {

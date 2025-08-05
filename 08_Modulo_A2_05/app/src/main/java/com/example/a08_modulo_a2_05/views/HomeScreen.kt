@@ -1,8 +1,10 @@
 package com.example.a08_modulo_a2_05.views
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -34,6 +36,9 @@ fun HomeScreen(nav: NavHostController) {
     val Toast: (String) -> Unit = {
         Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show()
     }
+    val prefs = ctx.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
+    val email = prefs.getString("email", "")
+
     LaunchedEffect(Unit) {
         try {
             val texto: motdGerado = API.service.gerarMOTD()
@@ -43,9 +48,14 @@ fun HomeScreen(nav: NavHostController) {
         }
     }
     BaseScaffold(nav, "HomeScreen") { content ->
-        Column (modifier = Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
-            motd?.let {
-                Text("$motd")
+        Column (modifier = Modifier.fillMaxSize().padding(8.dp)){
+            Text("Bem-vindo, ${email.toString().substring(0, 11)}", modifier = Modifier.align(Alignment.CenterHorizontally))
+            Box(modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                motd?.let {
+                    Text("$motd")
+                }
             }
         }
     }
