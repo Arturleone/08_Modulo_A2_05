@@ -72,7 +72,7 @@ fun BaseScaffold(nav: NavHostController, title: String = "", content: @Composabl
     Scaffold (
         topBar = {
             TopAppBar(
-                title = {},
+                title = {Text(title)},
                 navigationIcon = {
                     IconButton(onClick = { nav.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")

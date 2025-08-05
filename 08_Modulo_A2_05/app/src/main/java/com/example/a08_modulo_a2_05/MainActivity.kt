@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.a08_modulo_a2_05.ui.theme._08_Modulo_A2_05Theme
 import com.example.a08_modulo_a2_05.views.EscolasScreen
@@ -60,36 +61,42 @@ fun MyApp() {
     val scope = rememberCoroutineScope ()
     val drawerState = rememberDrawerState (DrawerValue.Closed)
     val ctx = LocalContext.current
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            DrawerContent(nav) { it ->
-                when (it) {
-                    "logout" -> {
-                        val prefs = ctx.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
-                        prefs.edit().apply{
-                            putString("jwt_token", "")
-                            apply()
+    val telaAtual = nav.currentBackStackEntryAsState().value?.destination?.route
+    if (telaAtual != "mapa") {
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                DrawerContent(nav) { it ->
+                    when (it) {
+                        "logout" -> {
+                            val prefs = ctx.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
+                            prefs.edit().apply{
+                                putString("jwt_token", "")
+                                apply()
+                            }
+                            scope.launch { drawerState.close() }
+                            nav.navigate("login")
                         }
-                        scope.launch { drawerState.close() }
-                        nav.navigate("login")
+                        else -> {
+                            scope.launch { drawerState.close() }
+                            nav.navigate(it)
+                        }
                     }
-                    else -> {
-                        scope.launch { drawerState.close() }
-                        nav.navigate(it)
-                    }
-                }
 
+                }
             }
+        ) {
+            NavApp(nav, scope, drawerState)
         }
-    ) {
+    } else {
         NavApp(nav, scope, drawerState)
     }
+
 }
 
 @Composable
 fun NavApp(nav: NavHostController, scope: CoroutineScope, drawerState: DrawerState) {
-    NavHost(nav, "home") {
+    NavHost(nav, "splash") {
         composable("splash") {
             SplashScreen(nav)
         }
