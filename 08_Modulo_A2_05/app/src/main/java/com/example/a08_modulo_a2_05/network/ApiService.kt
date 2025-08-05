@@ -6,7 +6,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ApiService {
-
-    @POST("worldskills/jwt/generate_token")
+    @POST("worldskills/A2/generate_token")
     suspend fun gerarToken(@Body login: AuthRequest): AuthResponse
 }

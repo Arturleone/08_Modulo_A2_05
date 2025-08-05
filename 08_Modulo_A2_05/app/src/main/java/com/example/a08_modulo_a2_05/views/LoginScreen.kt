@@ -29,8 +29,8 @@ import kotlinx.coroutines.launch
 fun LoginScreen(nav: NavHostController) {
 
     val ctx = LocalContext.current
-    var email by remember { mutableStateOf("") }
-    var senha by remember { mutableStateOf("") }
+    var email = remember { mutableStateOf("") }
+    var password = remember { mutableStateOf("") }
     var manterConectado by remember { mutableStateOf(false) }
     val Toast: (String) -> Unit = {
         Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show()
@@ -41,13 +41,13 @@ fun LoginScreen(nav: NavHostController) {
         Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
 
         OutlinedTextField(
-            value = email,
-            onValueChange = {email = it},
+            value = email.value,
+            onValueChange = {email.value = it},
             label = {"Email"}
         )
         OutlinedTextField(
-            value = senha,
-            onValueChange = {senha = it},
+            value = password.value,
+            onValueChange = {password.value = it},
             label = {"Senha"}
         )
 
@@ -61,28 +61,28 @@ fun LoginScreen(nav: NavHostController) {
         }
 
         Button(onClick = {
-            if (!email.contains(".") || !email.contains("@")) {
+            if (!email.value.contains(".") || !email.value.contains("@")) {
                 Toast("DEu erro no email")
                 return@Button
             }
-            if (!senha.any{it.isDigit()} || !senha.any{it.isLetter()} || senha.length <= 6) {
+            if (!password.value.any{it.isDigit()} || !password.value.any{it.isLetter()} || password.value.length <= 6) {
                 Toast("Deu erro na senha")
                 return@Button
             }
 
             scope.launch {
                 try {
-                    val token = API.service.gerarToken(login = AuthRequest(email, senha)).token
+                    Toast("tentando conectar")
+                    val token = API.service.gerarToken(login = AuthRequest(email.value, password.value)).token
+                    Toast("n conectou")
                     nav.navigate("home")
                 } catch (e: Exception) {
+                    Toast("deu ruim")
                     null
                 }
             }
-
-
         }) {
             Text("Entrar")
         }
-
     }
 }
