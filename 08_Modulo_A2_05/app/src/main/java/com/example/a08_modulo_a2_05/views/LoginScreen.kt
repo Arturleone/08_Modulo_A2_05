@@ -1,5 +1,6 @@
 package com.example.a08_modulo_a2_05.views
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -62,22 +63,25 @@ fun LoginScreen(nav: NavHostController) {
 
         Button(onClick = {
             if (!email.value.contains(".") || !email.value.contains("@")) {
-                Toast("DEu erro no email")
+                Toast("Erro no Email, Precisa conter '@' ou '.'")
                 return@Button
             }
             if (!password.value.any{it.isDigit()} || !password.value.any{it.isLetter()} || password.value.length <= 6) {
-                Toast("Deu erro na senha")
+                Toast("Erro na Senha, Precisa conter no mínimo 6 caracteres, uma letra e um dígito")
                 return@Button
             }
 
             scope.launch {
                 try {
-                    Toast("tentando conectar")
                     val token = API.service.gerarToken(login = AuthRequest(email.value, password.value)).token
-                    Toast("n conectou")
+                    val prefs = ctx.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
+                    prefs.edit().apply{
+                        putString("jwt_token", token)
+                        apply()
+                    }
                     nav.navigate("home")
                 } catch (e: Exception) {
-                    Toast("deu ruim")
+
                     null
                 }
             }

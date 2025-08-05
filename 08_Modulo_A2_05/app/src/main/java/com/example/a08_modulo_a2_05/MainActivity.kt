@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            _08_Modulo_A2_05Theme {
+            _08_Modulo_A2_05Theme(darkTheme = false) {
                 MyApp()
             }
         }
@@ -50,7 +50,7 @@ fun MyApp() {
 
 @Composable
 fun NavApp(nav: NavHostController) {
-    NavHost(nav, "login") {
+    NavHost(nav, "home") {
         composable("splash") {
             SplashScreen(nav)
         }
